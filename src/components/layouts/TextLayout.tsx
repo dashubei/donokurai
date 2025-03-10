@@ -1,21 +1,21 @@
 import React, { ReactNode } from "react";
 import styled from "styled-components";
 
-const Layout = styled.div<{ gap?: string }>`
+const Layout = styled.div<{ gapSize?: string }>`
   display: flex;
   flex-direction: column;
-  gap: ${(props) => props.gap || "1.5rem"};
+  gap: ${(props) => props.gapSize || "1.5rem"};
   width: 100%;
 `;
 
 const TextLayout = ({
   children,
-  gap,
+  gapSize,
 }: {
   children: ReactNode;
-  gap?: string;
+  gapSize?: string;
 }): React.JSX.Element => {
-  return <Layout gap={gap}>{children}</Layout>;
+  return <Layout $gap={gapSize}>{children}</Layout>;
 };
 
 export default TextLayout;

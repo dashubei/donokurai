@@ -18,8 +18,13 @@ const StyledButton = styled.button`
   cursor: pointer;
   width: min(50vw, 300px);
 
-  &:hover,
-  &:active {
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  &:not(:disabled):hover,
+  &:not(:disabled):active {
     background-color: white;
     color: black;
   }
@@ -27,10 +32,20 @@ const StyledButton = styled.button`
 
 type ButtonProps = {
   children: ReactNode;
+  isDisabled: boolean;
+  onClick: () => void;
 };
 
-const Button = ({ children }: ButtonProps): React.JSX.Element => {
-  return <StyledButton type="button">{children}</StyledButton>;
+const Button = ({
+  children,
+  isDisabled,
+  onClick,
+}: ButtonProps): React.JSX.Element => {
+  return (
+    <StyledButton onClick={onClick} disabled={isDisabled} type="button">
+      {children}
+    </StyledButton>
+  );
 };
 
 export default Button;

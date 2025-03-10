@@ -4,21 +4,35 @@ import BaseLayout from "./components/layouts/BaseLayout";
 import MainText from "./components/ui/text/MainText";
 import TextLayout from "./components/layouts/TextLayout";
 import BoldText from "./components/ui/text/BoldText";
-import DateInput from "./components/ui/input/DateInput";
+import AgeInput from "./components/ui/input/AgeInput";
 
 import SelectBox from "./components/ui/select/SelectBox";
 import Button from "./components/ui/button/Button";
 
-const App = (): React.JSX.Element => {
-  const [date, setDate] = useState<string>("2000-01-01");
-  const [gender, setGender] = useState<string>("");
+const MEN_AVE_LIFE_SPAN = 70;
+const WOMEN_AVE_LIFE_SPAN = 74;
 
-  const handleDateChange = (newDate: string) => {
-    setDate(newDate);
+const App = (): React.JSX.Element => {
+  const [age, setAge] = useState<number>(0);
+  const [gender, setGender] = useState<string>("");
+  const [result, setResult] = useState<number>();
+  const [isResultShow, setResultShow] = useState<boolean>(false);
+
+  const handleAgeChange = (newAge: number) => {
+    setAge(newAge);
   };
 
   const handleGenderChange = (newGender: string) => {
     setGender(newGender);
+  };
+
+  const handleCalcurate = () => {
+    if (age < 0 && !gender) return;
+
+    setResult(
+      gender === "男性" ? MEN_AVE_LIFE_SPAN - age : WOMEN_AVE_LIFE_SPAN - age
+    );
+    setResultShow(true);
   };
 
   return (
@@ -43,16 +57,23 @@ const App = (): React.JSX.Element => {
         </MainText>
       </TextLayout>
 
-      <TextLayout gap={"0"}>
-        <MainText>🎂誕生日を入力してください。</MainText>
-        <DateInput date={date} onDateChange={handleDateChange} />
+      <TextLayout gapSize={"0"}>
+        <MainText>🎂ご年齢を入力してください。</MainText>
+        <AgeInput age={age} onAgeChange={handleAgeChange} />
       </TextLayout>
 
-      <TextLayout gap={"0"}>
+      <TextLayout gapSize={"0"}>
         <MainText>性別（生物学的な性別を選択してください🙇）</MainText>
         <SelectBox gender={gender} handleChange={handleGenderChange} />
       </TextLayout>
-      <Button>計算する</Button>
+      <Button
+        onClick={handleCalcurate}
+        isDisabled={Boolean(age >= 0 && !gender)}
+      >
+        計算する
+      </Button>
+
+      {isResultShow && <>{result}</>}
     </BaseLayout>
   );
 };
