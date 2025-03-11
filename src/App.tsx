@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import MainTitle from "./components/ui/title/MainTitle";
 import BaseLayout from "./components/layouts/BaseLayout";
 import MainText from "./components/ui/text/MainText";
@@ -8,14 +8,28 @@ import AgeInput from "./components/ui/input/AgeInput";
 
 import SelectBox from "./components/ui/select/SelectBox";
 import Button from "./components/ui/button/Button";
+import Card from "./components/ui/card/Card";
+import CardList from "./components/ui/card-list/CardList";
 
 const MEN_AVE_LIFE_SPAN = 70;
 const WOMEN_AVE_LIFE_SPAN = 74;
 
+const calcurateTimeDay = (years: number): number => {
+  const totalDays = Math.trunc(years / 4) + 365 * years;
+  console.log(totalDays);
+  return totalDays;
+};
+
+const MEN_DAYS = calcurateTimeDay(MEN_AVE_LIFE_SPAN);
+const WOMEN_DAYS = calcurateTimeDay(MEN_AVE_LIFE_SPAN);
+
 const App = (): React.JSX.Element => {
   const [age, setAge] = useState<number>(0);
   const [gender, setGender] = useState<string>("");
-  const [result, setResult] = useState<number>();
+  const [resultYear, setResultYear] = useState<number>(0);
+  const [resultMonth, setResultMonth] = useState<number>(0);
+  const [resultDay, setResultDay] = useState<number>(0);
+  const [resultHour, setResultHour] = useState<number>(0);
   const [isResultShow, setResultShow] = useState<boolean>(false);
 
   const handleAgeChange = (newAge: number) => {
@@ -29,11 +43,24 @@ const App = (): React.JSX.Element => {
   const handleCalcurate = () => {
     if (age < 0 && !gender) return;
 
-    setResult(
+    setResultYear(
       gender === "男性" ? MEN_AVE_LIFE_SPAN - age : WOMEN_AVE_LIFE_SPAN - age
     );
+
     setResultShow(true);
   };
+
+  useEffect(() => {
+    setResultHour(resultDay * 24);
+  }, [resultDay]);
+
+  useEffect(() => {
+    setResultDay(resultYear * 365 + Math.trunc(resultYear / 4));
+  }, [resultMonth]);
+
+  useEffect(() => {
+    setResultMonth(resultYear * 12);
+  }, [resultYear]);
 
   return (
     <BaseLayout>
@@ -73,7 +100,57 @@ const App = (): React.JSX.Element => {
         計算する
       </Button>
 
-      {isResultShow && <>{result}</>}
+      {isResultShow && (
+        <>
+          <h2>残り時間</h2>
+          <CardList>
+            <Card>
+              {resultYear?.toLocaleString("ja-JP")}
+              <span>年</span>
+            </Card>
+            <Card>
+              {resultMonth?.toLocaleString("ja-JP")}
+              <span>月</span>
+            </Card>
+            <Card>
+              {resultDay?.toLocaleString("ja-JP")}
+              <span>日</span>
+            </Card>
+            <Card>
+              {resultHour?.toLocaleString("ja-JP")}
+              <span>時間</span>
+            </Card>
+          </CardList>
+
+          <span>
+            あなたは人生の
+            {Math.round(
+              100 -
+                (resultDay / (gender === "男性" ? MEN_DAYS : WOMEN_DAYS)) * 100
+            )}
+            %を生きました。（※健康寿命で計算しています。）
+          </span>
+          <div
+            style={{
+              border: "1px solid black",
+              width: "100%",
+              borderRadius: "100vmax",
+            }}
+          >
+            <div
+              style={{
+                backgroundColor: "black",
+                height: "5rem",
+                borderRadius: "100vmax 0 0 100vmax",
+                width: `${
+                  (resultDay / (gender === "男性" ? MEN_DAYS : WOMEN_DAYS)) *
+                  100
+                }%`,
+              }}
+            ></div>
+          </div>
+        </>
+      )}
     </BaseLayout>
   );
 };
