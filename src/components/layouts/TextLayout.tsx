@@ -15,7 +15,7 @@ const TextLayout = ({
   children: ReactNode;
   gapSize?: string;
 }): React.JSX.Element => {
-  return <Layout $gap={gapSize}>{children}</Layout>;
+  return <Layout gapSize={gapSize}>{children}</Layout>;
 };
 
 export default TextLayout;
