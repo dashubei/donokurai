@@ -84,12 +84,12 @@ const App = (): React.JSX.Element => {
         </MainText>
       </TextLayout>
 
-      <TextLayout gapSize={"0"}>
+      <TextLayout>
         <MainText>🎂ご年齢を入力してください。</MainText>
         <AgeInput age={age} onAgeChange={handleAgeChange} />
       </TextLayout>
 
-      <TextLayout gapSize={"0"}>
+      <TextLayout>
         <MainText>性別（生物学的な性別を選択してください🙇）</MainText>
         <SelectBox gender={gender} handleChange={handleGenderChange} />
       </TextLayout>
